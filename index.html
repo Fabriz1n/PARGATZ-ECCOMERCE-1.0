@@ -1,0 +1,2168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PARGATZ 2.0 — Luxury Tech Ecommerce MVP</title>
+  <style>
+    :root {
+      --bg: #050505;
+      --bg-2: #0b0b0b;
+      --bg-3: #111111;
+      --card: rgba(255,255,255,0.03);
+      --gold: #c6a969;
+      --gold-soft: #efd89e;
+      --white: #ffffff;
+      --muted: rgba(255,255,255,0.72);
+      --muted-2: rgba(255,255,255,0.46);
+      --border: rgba(255,255,255,0.10);
+      --success: #9fd38a;
+      --danger: #ff8f8f;
+      --radius: 28px;
+      --shadow: 0 20px 60px rgba(0,0,0,0.35);
+      --shadow-gold: 0 18px 50px rgba(198,169,105,0.12);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: radial-gradient(circle at top right, rgba(198,169,105,.08), transparent 22%), var(--bg);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; }
+    img { display: block; max-width: 100%; }
+    h1,h2,h3,h4,p { margin: 0; }
+
+    .container {
+      width: min(1320px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(90deg, rgba(198,169,105,.16), rgba(255,255,255,.04));
+      padding: 10px 16px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--gold-soft);
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1100;
+      backdrop-filter: blur(14px);
+      background: rgba(5,5,5,.72);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .logo {
+      font-size: 20px;
+      letter-spacing: .36em;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .nav-links a:hover,
+    .mobile-links a:hover { color: var(--white); }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .icon-btn, .solid-btn, .outline-btn, .tag-btn {
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: .25s ease;
+    }
+
+    .icon-btn {
+      width: 44px;
+      height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: rgba(255,255,255,.02);
+      color: var(--white);
+      font-size: 16px;
+    }
+
+    .icon-btn:hover, .outline-btn:hover, .tag-btn:hover {
+      border-color: rgba(198,169,105,.45);
+      box-shadow: 0 0 0 1px rgba(198,169,105,.18);
+    }
+
+    .counter {
+      position: absolute;
+      top: -5px;
+      right: -3px;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--gold);
+      color: #111;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .solid-btn, .outline-btn, .tag-btn {
+      padding: 13px 18px;
+      background: transparent;
+      color: var(--white);
+    }
+
+    .solid-btn {
+      background: var(--white);
+      color: #111;
+      border-color: var(--white);
+      font-weight: 700;
+    }
+
+    .solid-btn:hover { transform: translateY(-1px); }
+    .outline-btn { background: rgba(255,255,255,.03); }
+
+    .gold-btn {
+      background: rgba(198,169,105,.10);
+      color: var(--gold-soft);
+      border-color: rgba(198,169,105,.35);
+    }
+
+    .gold-btn:hover {
+      background: rgba(198,169,105,.18);
+      box-shadow: var(--shadow-gold);
+    }
+
+    .mobile-toggle { display: none; }
+    .mobile-menu {
+      display: none;
+      border-top: 1px solid var(--border);
+      background: rgba(9,9,9,.96);
+    }
+    .mobile-menu.open { display: block; }
+    .mobile-links {
+      display: grid;
+      gap: 6px;
+      padding: 10px 0 18px;
+    }
+    .mobile-links a {
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+      color: var(--muted);
+    }
+
+    .hero {
+      min-height: 92vh;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: end;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.82)),
+        radial-gradient(circle at 80% 15%, rgba(198,169,105,.22), transparent 24%),
+        url('https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=1800&q=80') center/cover no-repeat;
+    }
+
+    .hero-content {
+      width: 100%;
+      padding: 82px 0 96px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color: rgba(255,255,255,.78);
+      padding: 10px 15px;
+      border-radius: 999px;
+      font-size: 11px;
+      letter-spacing: .23em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      max-width: 920px;
+      font-size: clamp(48px, 7vw, 98px);
+      line-height: .94;
+      letter-spacing: -.045em;
+      font-weight: 800;
+    }
+
+    .gold-text {
+      background: linear-gradient(90deg, #fff, #dac395, var(--gold));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      max-width: 760px;
+      margin-top: 24px;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.9;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 30px;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-top: 34px;
+      max-width: 920px;
+    }
+
+    .hero-stat {
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,.34);
+      backdrop-filter: blur(8px);
+      border-radius: 24px;
+      padding: 18px;
+    }
+
+    .hero-stat strong {
+      display: block;
+      font-size: 24px;
+      color: var(--gold-soft);
+      margin-bottom: 6px;
+    }
+
+    .hero-stat span {
+      color: var(--muted-2);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .strip {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: #090909;
+    }
+
+    .strip-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: rgba(255,255,255,.07);
+    }
+
+    .strip-item {
+      background: #090909;
+      padding: 25px 16px;
+      text-align: center;
+      font-size: 12px;
+      color: rgba(255,255,255,.76);
+      text-transform: uppercase;
+      letter-spacing: .17em;
+    }
+
+    section.section { padding: 92px 0; }
+
+    .section-kicker {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .24em;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      max-width: 880px;
+      font-size: clamp(30px, 4.6vw, 58px);
+      line-height: 1.05;
+      letter-spacing: -.035em;
+      font-weight: 800;
+    }
+
+    .section-desc {
+      margin-top: 16px;
+      max-width: 720px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.9;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin: 26px 0 32px;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .search-box {
+      min-width: 300px;
+      max-width: 360px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      border-radius: 999px;
+      padding: 0 14px;
+    }
+
+    .search-box input {
+      width: 100%;
+      height: 46px;
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: var(--white);
+    }
+
+    .search-box input::placeholder { color: rgba(255,255,255,.38); }
+
+    .products-grid {
+      display: grid;
+      gap: 22px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .product-card {
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      overflow: hidden;
+      background: var(--bg-2);
+      box-shadow: var(--shadow);
+      transition: transform .28s ease, border-color .28s ease, box-shadow .28s ease;
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(198,169,105,.26);
+      box-shadow: var(--shadow), var(--shadow-gold);
+    }
+
+    .product-media {
+      position: relative;
+      aspect-ratio: 1 / 1.05;
+      overflow: hidden;
+      background: #101010;
+    }
+
+    .product-main-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .75s ease;
+    }
+
+    .product-card:hover .product-main-image { transform: scale(1.07); }
+
+    .product-badge {
+      position: absolute;
+      left: 14px;
+      top: 14px;
+      z-index: 2;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,.50);
+      color: rgba(255,255,255,.8);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .18em;
+    }
+
+    .wishlist-btn {
+      position: absolute;
+      right: 14px;
+      top: 14px;
+      z-index: 2;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,.45);
+      color: var(--white);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+    }
+
+    .wishlist-btn.active {
+      color: var(--gold-soft);
+      border-color: rgba(198,169,105,.45);
+    }
+
+    .hover-actions {
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: 14px;
+      display: flex;
+      gap: 10px;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: .28s ease;
+      z-index: 2;
+    }
+
+    .product-card:hover .hover-actions {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .hover-actions button {
+      border: 0;
+      cursor: pointer;
+      border-radius: 999px;
+      padding: 13px 14px;
+    }
+
+    .quick-btn {
+      flex: 1;
+      background: var(--white);
+      color: #111;
+      font-weight: 700;
+    }
+
+    .zoom-btn {
+      width: 54px;
+      background: rgba(255,255,255,.10);
+      color: var(--white);
+      border: 1px solid rgba(255,255,255,.12) !important;
+    }
+
+    .product-content { padding: 18px; }
+
+    .product-top {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .product-name {
+      font-size: 20px;
+      line-height: 1.25;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .product-sub {
+      color: var(--muted-2);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .product-price {
+      color: var(--gold-soft);
+      font-size: 22px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .product-flags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0;
+    }
+
+    .flag {
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      padding: 8px 12px;
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .10em;
+    }
+
+    .thumbs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .thumbs img {
+      width: 52px;
+      height: 52px;
+      object-fit: cover;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .thumbs img.active {
+      border-color: rgba(198,169,105,.55);
+      box-shadow: 0 0 0 1px rgba(198,169,105,.14);
+    }
+
+    .actions-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+    }
+
+    .add-cart-btn {
+      width: 100%;
+      border-radius: 999px;
+      border: 1px solid rgba(198,169,105,.35);
+      background: rgba(198,169,105,.10);
+      color: var(--gold-soft);
+      padding: 14px 16px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: .25s ease;
+    }
+
+    .add-cart-btn:hover { background: rgba(198,169,105,.18); }
+
+    .mini-icon-btn {
+      width: 50px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      color: var(--white);
+      cursor: pointer;
+    }
+
+    .collections-grid,
+    .reviews-grid {
+      display: grid;
+      gap: 22px;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .collection-card {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 34px;
+      min-height: 520px;
+      background: #0b0b0b;
+    }
+
+    .collection-card img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .8s ease;
+    }
+
+    .collection-card:hover img { transform: scale(1.08); }
+
+    .collection-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.82));
+    }
+
+    .collection-content {
+      position: absolute;
+      inset: auto 0 0 0;
+      z-index: 2;
+      padding: 28px;
+    }
+
+    .collection-title {
+      font-size: 30px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .collection-desc {
+      color: var(--muted);
+      line-height: 1.8;
+      max-width: 360px;
+      margin-bottom: 18px;
+    }
+
+    .tech-grid,
+    .about-grid,
+    .cta-grid {
+      display: grid;
+      gap: 24px;
+      grid-template-columns: 1.05fr .95fr;
+      align-items: center;
+    }
+
+    .tech-visual, .about-box, .cta-box {
+      border: 1px solid var(--border);
+      border-radius: 34px;
+      background: var(--card);
+      overflow: hidden;
+    }
+
+    .tech-visual {
+      min-height: 620px;
+      position: relative;
+    }
+
+    .tech-visual img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .tech-note {
+      position: absolute;
+      left: 22px;
+      bottom: 22px;
+      max-width: 330px;
+      border-radius: 22px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,.44);
+      backdrop-filter: blur(8px);
+      padding: 16px 18px;
+    }
+
+    .feature-cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .mini-card {
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: rgba(255,255,255,.03);
+      padding: 18px;
+    }
+
+    .mini-card strong {
+      display: block;
+      color: var(--gold);
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .about-box,
+    .cta-box { padding: 34px; }
+
+    .about-images {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 22px;
+    }
+
+    .about-images img {
+      width: 100%;
+      height: 100%;
+      min-height: 320px;
+      object-fit: cover;
+      border-radius: 28px;
+      border: 1px solid var(--border);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .stat {
+      border-radius: 22px;
+      border: 1px solid var(--border);
+      padding: 18px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 34px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      color: var(--gold-soft);
+    }
+
+    .review-card {
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 26px;
+      background: var(--card);
+    }
+
+    .stars {
+      color: var(--gold);
+      font-size: 16px;
+      letter-spacing: .12em;
+      margin-bottom: 18px;
+    }
+
+    .review-card p {
+      color: var(--muted);
+      line-height: 1.95;
+      font-size: 15px;
+    }
+
+    .review-name {
+      margin-top: 18px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .20em;
+      color: var(--muted-2);
+    }
+
+    .cta-box {
+      background: linear-gradient(90deg, #0b0b0b, #131313, #19130a);
+    }
+
+    .cta-actions {
+      display: flex;
+      justify-content: end;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    footer {
+      margin-top: 88px;
+      border-top: 1px solid var(--border);
+      padding: 56px 0;
+      background: rgba(0,0,0,.48);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 22px;
+    }
+
+    .footer-col h4 {
+      font-size: 15px;
+      margin-bottom: 16px;
+    }
+
+    .footer-col a, .footer-col p {
+      display: block;
+      color: var(--muted-2);
+      margin: 10px 0;
+      line-height: 1.8;
+      font-size: 14px;
+    }
+
+    .footer-col a:hover { color: var(--white); }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1250;
+      background: rgba(0,0,0,.62);
+      backdrop-filter: blur(5px);
+      opacity: 0;
+      visibility: hidden;
+      transition: .25s ease;
+    }
+
+    .overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .sidebar-cart {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: min(430px, 100%);
+      height: 100vh;
+      z-index: 1300;
+      background: #0a0a0a;
+      border-left: 1px solid var(--border);
+      transform: translateX(100%);
+      transition: transform .35s ease;
+      display: flex;
+      flex-direction: column;
+      box-shadow: -24px 0 70px rgba(0,0,0,.35);
+    }
+
+    .sidebar-cart.open { transform: translateX(0); }
+
+    .sidebar-head, .sidebar-foot {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-foot {
+      border-top: 1px solid var(--border);
+      border-bottom: 0;
+      margin-top: auto;
+    }
+
+    .side-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .close-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--white);
+      cursor: pointer;
+    }
+
+    .cart-items {
+      padding: 16px 20px 10px;
+      display: grid;
+      gap: 14px;
+      overflow: auto;
+    }
+
+    .cart-item {
+      display: grid;
+      grid-template-columns: 88px 1fr auto;
+      gap: 14px;
+      align-items: center;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: rgba(255,255,255,.02);
+      padding: 12px;
+      animation: popIn .25s ease;
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: translateY(6px) scale(.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .cart-item img {
+      width: 88px;
+      height: 88px;
+      object-fit: cover;
+      border-radius: 16px;
+    }
+
+    .cart-item-name {
+      font-weight: 700;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    .cart-item-meta {
+      color: var(--muted-2);
+      font-size: 12px;
+      line-height: 1.7;
+      margin-bottom: 8px;
+    }
+
+    .qty-control {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .qty-control button {
+      width: 32px;
+      height: 32px;
+      border: 0;
+      background: transparent;
+      color: var(--white);
+      cursor: pointer;
+    }
+
+    .qty-control span {
+      width: 30px;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .cart-summary {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 16px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .cart-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .cart-total {
+      font-size: 18px;
+      color: var(--white);
+      font-weight: 800;
+    }
+
+    .empty-state {
+      border: 1px dashed rgba(255,255,255,.12);
+      border-radius: 22px;
+      padding: 24px;
+      text-align: center;
+      color: var(--muted-2);
+      line-height: 1.9;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1400;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      opacity: 0;
+      visibility: hidden;
+      transition: .25s ease;
+    }
+
+    .modal.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,.72);
+      backdrop-filter: blur(5px);
+    }
+
+    .modal-dialog {
+      position: relative;
+      width: min(1140px, 100%);
+      max-height: 92vh;
+      overflow: auto;
+      border-radius: 34px;
+      border: 1px solid var(--border);
+      background: #090909;
+      box-shadow: 0 36px 90px rgba(0,0,0,.45);
+      transform: translateY(16px) scale(.985);
+      transition: .25s ease;
+      z-index: 1;
+    }
+
+    .modal.show .modal-dialog { transform: translateY(0) scale(1); }
+
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-body {
+      display: grid;
+      grid-template-columns: 1.02fr .98fr;
+      gap: 22px;
+      padding: 22px;
+    }
+
+    .gallery { display: grid; gap: 12px; }
+
+    .zoom-stage {
+      min-height: 560px;
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      overflow: hidden;
+      background: #101010;
+      position: relative;
+      cursor: zoom-in;
+    }
+
+    .zoom-stage img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform-origin: center center;
+      transition: transform .12s ease;
+    }
+
+    .zoom-hint {
+      position: absolute;
+      left: 16px;
+      bottom: 16px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,.42);
+      color: rgba(255,255,255,.82);
+      font-size: 11px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      z-index: 2;
+    }
+
+    .modal-thumbs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .modal-thumbs img {
+      width: 92px;
+      height: 92px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      object-fit: cover;
+      cursor: pointer;
+    }
+
+    .modal-thumbs img.active {
+      border-color: rgba(198,169,105,.55);
+      box-shadow: 0 0 0 1px rgba(198,169,105,.14);
+    }
+
+    .modal-title {
+      font-size: 40px;
+      line-height: 1.03;
+      font-weight: 800;
+      margin-bottom: 12px;
+      letter-spacing: -.03em;
+    }
+
+    .modal-price {
+      color: var(--gold-soft);
+      font-size: 30px;
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+
+    .modal-info p {
+      color: var(--muted);
+      line-height: 1.9;
+      margin-bottom: 18px;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .chip {
+      padding: 9px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .select-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field label {
+      font-size: 12px;
+      color: var(--muted-2);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+    }
+
+    .field select {
+      height: 48px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--border);
+      color: var(--white);
+      padding: 0 14px;
+      outline: none;
+    }
+
+    .quantity-box {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 18px;
+    }
+
+    .quantity-box button {
+      width: 36px;
+      height: 36px;
+      border: 0;
+      background: transparent;
+      color: var(--white);
+      cursor: pointer;
+    }
+
+    .quantity-box span {
+      width: 36px;
+      text-align: center;
+    }
+
+    .modal-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .toast-wrap {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 1600;
+      display: grid;
+      gap: 10px;
+      width: min(360px, calc(100% - 28px));
+    }
+
+    .toast {
+      border-radius: 18px;
+      padding: 14px 16px;
+      border: 1px solid rgba(198,169,105,.26);
+      background: rgba(10,10,10,.96);
+      box-shadow: var(--shadow);
+      color: var(--white);
+      font-size: 14px;
+      animation: toastIn .25s ease;
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .success-text { color: var(--success); }
+    .danger-text { color: var(--danger); }
+
+    @media (max-width: 1120px) {
+      .products-grid,
+      .collections-grid,
+      .reviews-grid { grid-template-columns: repeat(2, 1fr); }
+      .hero-stats,
+      .strip-grid,
+      .tech-grid,
+      .about-grid,
+      .cta-grid,
+      .modal-body,
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .mobile-toggle { display: inline-flex; }
+      .hero,
+      .strip-grid,
+      .products-grid,
+      .collections-grid,
+      .reviews-grid,
+      .tech-grid,
+      .about-grid,
+      .cta-grid,
+      .modal-body,
+      .footer-grid,
+      .hero-stats { grid-template-columns: 1fr; }
+      .about-images,
+      .feature-cards,
+      .stats,
+      .select-row { grid-template-columns: 1fr 1fr; }
+      .tech-visual { min-height: 430px; }
+      .zoom-stage { min-height: 390px; }
+      .hero { min-height: 80vh; }
+      section.section { padding: 74px 0; }
+    }
+
+    @media (max-width: 680px) {
+      .container { width: min(1320px, calc(100% - 20px)); }
+      .nav-actions { gap: 8px; }
+      .desktop-search-btn { display: none; }
+      .hero-content { padding: 72px 0 64px; }
+      .hero p { font-size: 15px; }
+      .about-images,
+      .feature-cards,
+      .stats,
+      .select-row { grid-template-columns: 1fr; }
+      .search-box { min-width: 100%; max-width: 100%; }
+      .toolbar { align-items: stretch; }
+      .collection-card { min-height: 430px; }
+      .modal-dialog { border-radius: 24px; }
+      .modal-head, .modal-body { padding: 16px; }
+      .modal-title { font-size: 32px; }
+      .zoom-stage { min-height: 320px; }
+      .sidebar-cart { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">PARGATZ • Magnetic Mood • envío internacional gratis en experiencias seleccionadas</div>
+
+  <header class="navbar">
+    <div class="container nav-inner">
+      <div class="logo">PARGATZ</div>
+
+      <nav class="nav-links">
+        <a href="#shop">Shop</a>
+        <a href="#technology">Tecnología</a>
+        <a href="#collections">Colecciones</a>
+        <a href="#about">Nosotros</a>
+        <a href="#reviews">Reviews</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="icon-btn desktop-search-btn" id="focusSearchBtn" aria-label="Buscar">⌕</button>
+        <button class="icon-btn" id="wishlistOpenBtn" aria-label="Wishlist">♡ <span class="counter" id="wishlistCount">0</span></button>
+        <button class="icon-btn" id="cartOpenBtn" aria-label="Carrito">👜 <span class="counter" id="cartCount">0</span></button>
+        <button class="icon-btn mobile-toggle" id="mobileToggle" aria-label="Menú">☰</button>
+      </div>
+    </div>
+
+    <div class="mobile-menu" id="mobileMenu">
+      <div class="container mobile-links">
+        <a href="#shop">Shop</a>
+        <a href="#technology">Tecnología</a>
+        <a href="#collections">Colecciones</a>
+        <a href="#about">Nosotros</a>
+        <a href="#reviews">Reviews</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container hero-content">
+      <div class="eyebrow">MAGNETIC MOOD • Estilo, elegancia y versatilidad</div>
+      <h1>Una montura. <span class="gold-text">Múltiples filtros.</span> Cientos de combinaciones.</h1>
+      <p>
+        PARGATZ está pensada para personas que buscan lujo, tecnología y comodidad en un solo producto.
+        Este MVP presenta una experiencia ecommerce premium centrada en la esencia de la marca: lentes magnéticos,
+        filtros intercambiables en segundos, diseño elegante y una experiencia visual más internacional.
+      </p>
+      <div class="hero-actions">
+        <a class="solid-btn" href="#shop">Comprar ahora</a>
+        <a class="outline-btn" href="#technology">Explorar tecnología</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><strong>+6</strong><span>Filtros premium intercambiables en modelos destacados.</span></div>
+        <div class="hero-stat"><strong>1</strong><span>Montura base para crear múltiples looks y usos.</span></div>
+        <div class="hero-stat"><strong>UV</strong><span>Protección visual y experiencia polarizada en líneas clave.</span></div>
+        <div class="hero-stat"><strong>ULTRA</strong><span>Monturas ultralivianas con enfoque premium y elegante.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="strip">
+    <div class="container strip-grid">
+      <div class="strip-item">Filtros magnéticos intercambiables</div>
+      <div class="strip-item">Diseño elegante y atemporal</div>
+      <div class="strip-item">Montura ultraliviana</div>
+      <div class="strip-item">Protección UV y polarizado</div>
+    </div>
+  </section>
+
+  <main>
+    <section class="section" id="shop">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Shop Pargatz</div>
+            <h2 class="section-title">Modelos inspirados en la propuesta real de PARGATZ.</h2>
+            <p class="section-desc">
+              Un catálogo más comercial y dinámico, pensado para mostrar modelos, explicar beneficios y facilitar la compra.
+              Incluye búsqueda en vivo, filtros, wishlist, zoom, quick view y carrito lateral con persistencia local.
+            </p>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <div class="filters" id="filterGroup">
+            <button class="tag-btn gold-btn filter-btn" data-filter="all">Todos</button>
+            <button class="tag-btn filter-btn" data-filter="magnetic">Magnéticos</button>
+            <button class="tag-btn filter-btn" data-filter="luxury">Luxury</button>
+            <button class="tag-btn filter-btn" data-filter="aviator">Aviator</button>
+            <button class="tag-btn filter-btn" data-filter="ultralight">Ultra light</button>
+          </div>
+
+          <div class="search-box">
+            <span>⌕</span>
+            <input id="searchInput" type="text" placeholder="Buscar Pargatz, filtros, modelos o estilo..." />
+          </div>
+        </div>
+
+        <div class="products-grid" id="productsGrid"></div>
+      </div>
+    </section>
+
+    <section class="section" id="collections">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Colecciones</div>
+            <h2 class="section-title">Luxury tech eyewear con identidad propia.</h2>
+          </div>
+        </div>
+        <div class="collections-grid" id="collectionsGrid"></div>
+      </div>
+    </section>
+
+    <section class="section" id="technology">
+      <div class="container tech-grid">
+        <div class="tech-visual">
+          <img src="https://images.unsplash.com/photo-1574258495973-f010dfbb5371?auto=format&fit=crop&w=1400&q=80" alt="Tecnología magnética Pargatz" />
+          <div class="tech-note">
+            <div class="section-kicker" style="margin-bottom:8px">Tecnología magnética</div>
+            <p style="color:var(--muted);line-height:1.8;font-size:14px;">Cambia filtros en segundos y adapta el lente a tu estilo y al momento del día.</p>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-kicker">Tecnología Pargatz</div>
+          <h2 class="section-title" style="font-size:clamp(30px,4.4vw,54px)">Diseño elegante con versatilidad real.</h2>
+          <p class="section-desc">
+            La marca debe comunicar que no vende solo lentes, sino una experiencia adaptable: una montura premium con filtros intercambiables,
+            sensación ultraliviana, estética cuidada y opciones para sol, pantallas y diferentes momentos del día.
+          </p>
+
+          <div class="feature-cards">
+            <div class="mini-card"><strong>01</strong>Intercambio de filtros en segundos.</div>
+            <div class="mini-card"><strong>02</strong>Montura cómoda y ultraliviana.</div>
+            <div class="mini-card"><strong>03</strong>Look elegante, urbano y premium.</div>
+            <div class="mini-card"><strong>04</strong>Protección UV y opción polarizada.</div>
+          </div>
+
+          <div class="hero-actions">
+            <a href="#shop" class="solid-btn">Ver modelos</a>
+            <button class="outline-btn gold-btn" id="openFeaturedModalBtn">Ver modelo destacado</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="about">
+      <div class="container about-grid">
+        <div class="about-box">
+          <div class="section-kicker">Nosotros</div>
+          <h2 class="section-title" style="font-size:clamp(30px,4.5vw,50px)">Donde la innovación se fusiona con el estilo.</h2>
+          <p class="section-desc">
+            PARGATZ se presenta como una marca para quienes buscan versatilidad, comodidad y presencia visual sin renunciar al lujo.
+            Este rediseño lleva esa idea a una experiencia ecommerce más sólida, moderna y aspiracional.
+          </p>
+          <div class="stats">
+            <div class="stat"><strong>6 en 1</strong><span style="color:var(--muted-2);line-height:1.7">Concepto visual fuerte para comunicar más valor por compra.</span></div>
+            <div class="stat"><strong>24/7</strong><span style="color:var(--muted-2);line-height:1.7">Estructura lista para venta online continua.</span></div>
+          </div>
+        </div>
+
+        <div class="about-images">
+          <img src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=1200&q=80" alt="Pargatz lifestyle 1" />
+          <img src="https://images.unsplash.com/photo-1577803645773-f96470509666?auto=format&fit=crop&w=1200&q=80" alt="Pargatz lifestyle 2" />
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="reviews">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Reviews</div>
+            <h2 class="section-title">La confianza mejora la conversión.</h2>
+          </div>
+          <div style="color:var(--muted-2);font-size:14px">Experiencia tipo marca internacional</div>
+        </div>
+        <div class="reviews-grid" id="reviewsGrid"></div>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:18px">
+      <div class="container cta-grid">
+        <div class="cta-box">
+          <div class="section-kicker">Pargatz 2.0 MVP</div>
+          <h2 class="section-title" style="font-size:clamp(30px,4.7vw,56px)">Más premium, más claro, más listo para vender.</h2>
+          <p class="section-desc">
+            Ya queda implementado el núcleo del ecommerce: zoom funcional, quick view, carrito persistente, wishlist persistente, cálculo de subtotal,
+            cantidades, filtros y búsqueda en vivo.
+          </p>
+        </div>
+        <div class="cta-actions">
+          <a href="#shop" class="solid-btn">Comprar colección</a>
+          <button id="ctaCartBtn" class="outline-btn gold-btn">Abrir carrito</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-grid">
+      <div class="footer-col">
+        <div class="logo">PARGATZ</div>
+        <p>Luxury tech eyewear con enfoque en filtros magnéticos, diseño elegante y experiencia de compra premium.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Shop</h4>
+        <a href="#shop">Best sellers</a>
+        <a href="#collections">Colecciones</a>
+        <a href="#technology">Tecnología</a>
+        <a href="#shop">Nuevos ingresos</a>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <a href="#">Envíos</a>
+        <a href="#">Garantía</a>
+        <a href="#">Devoluciones</a>
+        <a href="#">Contacto</a>
+      </div>
+      <div class="footer-col">
+        <h4>Brand</h4>
+        <a href="#about">Nosotros</a>
+        <a href="#reviews">Reviews</a>
+        <a href="#">Instagram</a>
+        <a href="#">TikTok</a>
+      </div>
+    </div>
+  </footer>
+
+  <div class="overlay" id="pageOverlay"></div>
+
+  <aside class="sidebar-cart" id="sidebarCart" aria-hidden="true">
+    <div class="sidebar-head">
+      <div class="side-row">
+        <div>
+          <div class="section-kicker" style="margin-bottom:6px">Carrito premium</div>
+          <h3 style="font-size:24px">Tu selección Pargatz</h3>
+        </div>
+        <button class="close-btn" id="closeCartBtn">✕</button>
+      </div>
+    </div>
+
+    <div class="cart-items" id="cartItems"></div>
+
+    <div class="sidebar-foot">
+      <div class="cart-summary">
+        <div class="cart-line"><span>Subtotal</span><strong id="subtotalEl">$0</strong></div>
+        <div class="cart-line"><span>Envío</span><span id="shippingEl">Gratis</span></div>
+        <div class="cart-line cart-total"><span>Total</span><span id="totalEl">$0</span></div>
+      </div>
+      <button class="solid-btn" style="width:100%;margin-bottom:10px">Finalizar compra MVP</button>
+      <button class="outline-btn" style="width:100%" id="continueBtn">Seguir comprando</button>
+    </div>
+  </aside>
+
+  <div class="modal" id="productModal" aria-hidden="true">
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+    <div class="modal-dialog">
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker" style="margin-bottom:6px">Quick view</div>
+          <h3 style="font-size:24px">Vista de producto</h3>
+        </div>
+        <button class="close-btn" id="closeModalBtn">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="gallery">
+          <div class="zoom-stage" id="zoomStage">
+            <img id="modalMainImage" src="" alt="Producto Pargatz" />
+            <div class="zoom-hint">Mueve el mouse para zoom</div>
+          </div>
+          <div class="modal-thumbs" id="modalThumbs"></div>
+        </div>
+
+        <div class="modal-info">
+          <h2 class="modal-title" id="modalTitle"></h2>
+          <div class="modal-price" id="modalPrice"></div>
+          <p id="modalDescription"></p>
+          <div class="chips" id="modalSpecs"></div>
+
+          <div class="select-row">
+            <div class="field">
+              <label for="modalFilterSelect">Filtro</label>
+              <select id="modalFilterSelect"></select>
+            </div>
+            <div class="field">
+              <label for="modalColorSelect">Color</label>
+              <select id="modalColorSelect"></select>
+            </div>
+          </div>
+
+          <div class="field" style="margin-bottom:12px;max-width:180px">
+            <label>Cantidad</label>
+            <div class="quantity-box">
+              <button id="qtyMinusBtn">−</button>
+              <span id="qtyValue">1</span>
+              <button id="qtyPlusBtn">+</button>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button class="solid-btn" id="modalAddCartBtn">Agregar al carrito</button>
+            <button class="outline-btn gold-btn" id="modalWishlistBtn">Agregar a wishlist</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-wrap" id="toastWrap"></div>
+
+  <script>
+    const STORAGE_KEYS = {
+      cart: 'pargatz_cart_v2',
+      wishlist: 'pargatz_wishlist_v2'
+    };
+
+    const products = [
+      {
+        id: 1,
+        name: 'Tate Aviator',
+        price: 99,
+        category: 'aviator',
+        badge: 'Aviator',
+        subtitle: 'Polarizado regulable • Protección UV',
+        shortFlags: ['UV', 'Polarizado', 'Aviator'],
+        description: 'Modelo Pargatz con estética aviator, ideal para quienes buscan presencia premium, protección visual y un look elegante de uso diario.',
+        series: 'Magnetic Mood',
+        filters: ['Polarizado regulable', 'Filtro oscuro', 'Filtro claro', 'Pantalla'],
+        colors: ['Negro', 'Dorado', 'Plateado'],
+        images: [
+          'https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1577803645773-f96470509666?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=1200&q=80'
+        ]
+      },
+      {
+        id: 2,
+        name: 'Pargatz Magnetic Mood Black',
+        price: 119,
+        category: 'magnetic',
+        badge: 'Best Seller',
+        subtitle: '1 montura • +6 filtros • Look premium',
+        shortFlags: ['6 en 1', 'Magnético', 'Premium'],
+        description: 'Una propuesta central de Pargatz: una sola montura con múltiples filtros intercambiables para adaptarse a tu estilo y a distintas situaciones del día.',
+        series: 'Magnetic Mood',
+        filters: ['Filtro sol', 'Filtro pantalla', 'Filtro conducción', 'Filtro claro', 'Polarizado', 'Night view'],
+        colors: ['Negro', 'Carey'],
+        images: [
+          'https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1574258495973-f010dfbb5371?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1577803645773-f96470509666?auto=format&fit=crop&w=1200&q=80'
+        ]
+      },
+      {
+        id: 3,
+        name: 'Pargatz Ultra Light Gold',
+        price: 129,
+        category: 'ultralight',
+        badge: 'Ultra Light',
+        subtitle: 'Montura ultraliviana • Diseño elegante',
+        shortFlags: ['Ligero', 'Luxury', 'Confort'],
+        description: 'Pensado para usuarios que priorizan confort, diseño refinado y una presencia sofisticada sin perder la esencia magnética de la marca.',
+        series: 'Luxury Tech',
+        filters: ['Filtro oscuro', 'Filtro ámbar', 'Filtro pantalla'],
+        colors: ['Dorado', 'Champagne', 'Negro'],
+        images: [
+          'https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=1200&q=80'
+        ]
+      },
+      {
+        id: 4,
+        name: 'Pargatz Vision Screen',
+        price: 109,
+        category: 'magnetic',
+        badge: 'Tech Vision',
+        subtitle: 'Ideal para pantallas • Protección visual',
+        shortFlags: ['Pantallas', 'Magnético', 'Versátil'],
+        description: 'Una alternativa orientada a jornadas digitales, manteniendo la estética premium y el concepto adaptable de filtros intercambiables.',
+        series: 'Vision Tech',
+        filters: ['Pantalla blue light', 'Filtro claro', 'Night view'],
+        colors: ['Negro mate', 'Azul oscuro'],
+        images: [
+          'https://images.unsplash.com/photo-1574258495973-f010dfbb5371?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80'
+        ]
+      },
+      {
+        id: 5,
+        name: 'Pargatz Luxury Noir',
+        price: 139,
+        category: 'luxury',
+        badge: 'Luxury',
+        subtitle: 'Elegancia atemporal • Acabado premium',
+        shortFlags: ['Luxury', 'Elegante', 'Urbano'],
+        description: 'Diseñado para destacar por su sobriedad, elegancia y presencia. Ideal para reforzar la percepción premium de la marca.',
+        series: 'Luxury Series',
+        filters: ['Filtro oscuro', 'Polarizado', 'Filtro conducción'],
+        colors: ['Negro', 'Plateado'],
+        images: [
+          'https://images.unsplash.com/photo-1577803645773-f96470509666?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1574258495973-f010dfbb5371?auto=format&fit=crop&w=1200&q=80'
+        ]
+      },
+      {
+        id: 6,
+        name: 'Pargatz Urban Magnetic',
+        price: 115,
+        category: 'magnetic',
+        badge: 'Trending',
+        subtitle: 'Versatilidad urbana • Diseño atemporal',
+        shortFlags: ['Urbano', 'Magnético', 'Comfort'],
+        description: 'Un lente pensado para combinar con distintos outfits y momentos. Enfocado en estilo, adaptabilidad y experiencia premium.',
+        series: 'Urban Magnetic',
+        filters: ['Filtro oscuro', 'Filtro claro', 'Pantalla', 'Conducción'],
+        colors: ['Negro', 'Carey', 'Plateado'],
+        images: [
+          'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1577803645773-f96470509666?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=1200&q=80'
+        ]
+      }
+    ];
+
+    const collections = [
+      {
+        title: 'Magnetic Mood',
+        desc: 'La colección que mejor comunica la promesa Pargatz: estilo, elegancia y filtros intercambiables en segundos.',
+        image: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=1200&q=80'
+      },
+      {
+        title: 'Luxury Tech',
+        desc: 'Una línea más sobria y refinada, con siluetas premium para públicos que quieren destacar con elegancia.',
+        image: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=1200&q=80'
+      },
+      {
+        title: 'Ultra Light',
+        desc: 'Monturas ultralivianas con enfoque en confort, uso prolongado y una presencia más moderna.',
+        image: 'https://images.unsplash.com/photo-1574258495973-f010dfbb5371?auto=format&fit=crop&w=1200&q=80'
+      }
+    ];
+
+    const reviews = [
+      {
+        name: 'Valeria M.',
+        text: 'Lo mejor es que la página explica mejor la idea de una montura con filtros intercambiables. Se siente mucho más premium y clara.'
+      },
+      {
+        name: 'Carlos D.',
+        text: 'El carrito lateral y el zoom hacen que la compra sea mucho más cómoda. Ya parece una marca internacional y no una tienda básica.'
+      },
+      {
+        name: 'Andrea P.',
+        text: 'La parte visual transmite mejor lujo, estilo y tecnología. El concepto de Pargatz queda mucho más fuerte.'
+      }
+    ];
+
+    let currentFilter = 'all';
+    let searchTerm = '';
+    let wishlist = loadState(STORAGE_KEYS.wishlist, []);
+    let cart = loadState(STORAGE_KEYS.cart, []);
+    let modalProduct = null;
+    let modalImage = '';
+    let modalQty = 1;
+
+    const productsGrid = document.getElementById('productsGrid');
+    const collectionsGrid = document.getElementById('collectionsGrid');
+    const reviewsGrid = document.getElementById('reviewsGrid');
+    const searchInput = document.getElementById('searchInput');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const cartOpenBtn = document.getElementById('cartOpenBtn');
+    const ctaCartBtn = document.getElementById('ctaCartBtn');
+    const wishlistOpenBtn = document.getElementById('wishlistOpenBtn');
+    const wishlistCount = document.getElementById('wishlistCount');
+    const cartCount = document.getElementById('cartCount');
+    const focusSearchBtn = document.getElementById('focusSearchBtn');
+    const mobileToggle = document.getElementById('mobileToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const pageOverlay = document.getElementById('pageOverlay');
+    const sidebarCart = document.getElementById('sidebarCart');
+    const cartItems = document.getElementById('cartItems');
+    const subtotalEl = document.getElementById('subtotalEl');
+    const totalEl = document.getElementById('totalEl');
+    const shippingEl = document.getElementById('shippingEl');
+    const closeCartBtn = document.getElementById('closeCartBtn');
+    const continueBtn = document.getElementById('continueBtn');
+    const productModal = document.getElementById('productModal');
+    const modalBackdrop = document.getElementById('modalBackdrop');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const modalMainImage = document.getElementById('modalMainImage');
+    const modalThumbs = document.getElementById('modalThumbs');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalPrice = document.getElementById('modalPrice');
+    const modalDescription = document.getElementById('modalDescription');
+    const modalSpecs = document.getElementById('modalSpecs');
+    const modalFilterSelect = document.getElementById('modalFilterSelect');
+    const modalColorSelect = document.getElementById('modalColorSelect');
+    const modalAddCartBtn = document.getElementById('modalAddCartBtn');
+    const modalWishlistBtn = document.getElementById('modalWishlistBtn');
+    const qtyMinusBtn = document.getElementById('qtyMinusBtn');
+    const qtyPlusBtn = document.getElementById('qtyPlusBtn');
+    const qtyValue = document.getElementById('qtyValue');
+    const zoomStage = document.getElementById('zoomStage');
+    const toastWrap = document.getElementById('toastWrap');
+    const openFeaturedModalBtn = document.getElementById('openFeaturedModalBtn');
+
+    function loadState(key, fallback) {
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch {
+        return fallback;
+      }
+    }
+
+    function saveState(key, value) {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
+
+    function formatPrice(value) {
+      return '$' + Number(value).toLocaleString('en-US');
+    }
+
+    function toast(message) {
+      const el = document.createElement('div');
+      el.className = 'toast';
+      el.textContent = message;
+      toastWrap.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(8px)';
+      }, 2200);
+      setTimeout(() => el.remove(), 2600);
+    }
+
+    function getFilteredProducts() {
+      return products.filter(product => {
+        const text = [product.name, product.subtitle, product.description, product.series, ...product.filters, ...product.colors].join(' ').toLowerCase();
+        const matchesFilter = currentFilter === 'all' || product.category === currentFilter;
+        const matchesSearch = text.includes(searchTerm.toLowerCase());
+        return matchesFilter && matchesSearch;
+      });
+    }
+
+    function renderCollections() {
+      collectionsGrid.innerHTML = collections.map(item => `
+        <article class="collection-card">
+          <img src="${item.image}" alt="${item.title}" />
+          <div class="collection-content">
+            <div class="section-kicker">Colección Pargatz</div>
+            <div class="collection-title">${item.title}</div>
+            <div class="collection-desc">${item.desc}</div>
+            <button class="outline-btn">Explorar</button>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function renderReviews() {
+      reviewsGrid.innerHTML = reviews.map(item => `
+        <article class="review-card">
+          <div class="stars">★★★★★</div>
+          <p>“${item.text}”</p>
+          <div class="review-name">${item.name}</div>
+        </article>
+      `).join('');
+    }
+
+    function renderProducts() {
+      const list = getFilteredProducts();
+
+      if (!list.length) {
+        productsGrid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">No se encontraron productos con ese filtro o búsqueda. Prueba otra palabra clave.</div>`;
+        return;
+      }
+
+      productsGrid.innerHTML = list.map(product => {
+        const activeWish = wishlist.some(item => item === product.id);
+        return `
+          <article class="product-card">
+            <div class="product-media">
+              <span class="product-badge">${product.badge}</span>
+              <button class="wishlist-btn ${activeWish ? 'active' : ''}" data-wishlist="${product.id}">${activeWish ? '♥' : '♡'}</button>
+              <img class="product-main-image" src="${product.images[0]}" alt="${product.name}" />
+              <div class="hover-actions">
+                <button class="quick-btn" data-quick="${product.id}">Quick View</button>
+                <button class="zoom-btn" data-zoom="${product.id}">⌕</button>
+              </div>
+            </div>
+            <div class="product-content">
+              <div class="product-top">
+                <div>
+                  <div class="product-name">${product.name}</div>
+                  <div class="product-sub">${product.subtitle}</div>
+                </div>
+                <div class="product-price">${formatPrice(product.price)}</div>
+              </div>
+              <div class="product-flags">
+                ${product.shortFlags.map(flag => `<span class="flag">${flag}</span>`).join('')}
+              </div>
+              <div class="thumbs">
+                ${product.images.map((img, index) => `<img src="${img}" class="${index === 0 ? 'active' : ''}" data-thumb-product="${product.id}" data-thumb-src="${img}" alt="thumb">`).join('')}
+              </div>
+              <div class="actions-row">
+                <button class="add-cart-btn" data-add="${product.id}">Agregar al carrito</button>
+                <button class="mini-icon-btn" data-quick="${product.id}">👁</button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function updateCounters() {
+      cartCount.textContent = cart.reduce((acc, item) => acc + item.qty, 0);
+      wishlistCount.textContent = wishlist.length;
+    }
+
+    function normalizeCartItem(id, filter, color) {
+      return cart.find(item => item.id === id && item.filter === filter && item.color === color);
+    }
+
+    function addToCart(id, qty = 1, filter = null, color = null) {
+      const product = products.find(p => p.id === id);
+      if (!product) return;
+      const chosenFilter = filter || product.filters[0] || 'Standard';
+      const chosenColor = color || product.colors[0] || 'Negro';
+      const existing = normalizeCartItem(id, chosenFilter, chosenColor);
+
+      if (existing) {
+        existing.qty += qty;
+      } else {
+        cart.push({ id, qty, filter: chosenFilter, color: chosenColor });
+      }
+
+      saveState(STORAGE_KEYS.cart, cart);
+      updateCounters();
+      renderCart();
+      toast(`${product.name} agregado al carrito.`);
+    }
+
+    function removeFromCart(index) {
+      const removed = cart[index];
+      if (!removed) return;
+      const product = products.find(p => p.id === removed.id);
+      cart.splice(index, 1);
+      saveState(STORAGE_KEYS.cart, cart);
+      updateCounters();
+      renderCart();
+      toast(`${product.name} eliminado del carrito.`);
+    }
+
+    function changeQty(index, delta) {
+      const item = cart[index];
+      if (!item) return;
+      item.qty += delta;
+      if (item.qty <= 0) return removeFromCart(index);
+      saveState(STORAGE_KEYS.cart, cart);
+      updateCounters();
+      renderCart();
+    }
+
+    function renderCart() {
+      if (!cart.length) {
+        cartItems.innerHTML = `<div class="empty-state">Tu carrito está vacío. Agrega modelos Pargatz para iniciar la experiencia premium.</div>`;
+        subtotalEl.textContent = '$0';
+        totalEl.textContent = '$0';
+        shippingEl.textContent = 'Gratis';
+        return;
+      }
+
+      let subtotal = 0;
+      cartItems.innerHTML = cart.map((item, index) => {
+        const product = products.find(p => p.id === item.id);
+        const lineTotal = product.price * item.qty;
+        subtotal += lineTotal;
+        return `
+          <article class="cart-item">
+            <img src="${product.images[0]}" alt="${product.name}" />
+            <div>
+              <div class="cart-item-name">${product.name}</div>
+              <div class="cart-item-meta">${item.filter} • ${item.color} • ${formatPrice(product.price)}</div>
+              <div class="qty-control">
+                <button data-cart-qty="minus" data-index="${index}">−</button>
+                <span>${item.qty}</span>
+                <button data-cart-qty="plus" data-index="${index}">+</button>
+              </div>
+            </div>
+            <div style="display:grid;gap:8px;justify-items:end;align-self:start;">
+              <strong style="color:var(--gold-soft)">${formatPrice(lineTotal)}</strong>
+              <button class="close-btn" style="width:34px;height:34px;font-size:12px" data-cart-remove="${index}">✕</button>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      const shipping = subtotal >= 99 ? 0 : 12;
+      subtotalEl.textContent = formatPrice(subtotal);
+      totalEl.textContent = formatPrice(subtotal + shipping);
+      shippingEl.textContent = shipping === 0 ? 'Gratis' : formatPrice(shipping);
+    }
+
+    function toggleWishlist(id) {
+      const index = wishlist.indexOf(id);
+      const product = products.find(p => p.id === id);
+      if (index > -1) {
+        wishlist.splice(index, 1);
+        toast(`${product.name} salió de wishlist.`);
+      } else {
+        wishlist.push(id);
+        toast(`${product.name} fue agregado a wishlist.`);
+      }
+      saveState(STORAGE_KEYS.wishlist, wishlist);
+      updateCounters();
+      renderProducts();
+      updateModalWishlistState();
+    }
+
+    function openCart() {
+      pageOverlay.classList.add('show');
+      sidebarCart.classList.add('open');
+      sidebarCart.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeCart() {
+      pageOverlay.classList.remove('show');
+      sidebarCart.classList.remove('open');
+      sidebarCart.setAttribute('aria-hidden', 'true');
+      if (!productModal.classList.contains('show')) document.body.style.overflow = '';
+    }
+
+    function openModal(productId) {
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+
+      modalProduct = product;
+      modalImage = product.images[0];
+      modalQty = 1;
+      qtyValue.textContent = modalQty;
+      modalTitle.textContent = product.name;
+      modalPrice.textContent = formatPrice(product.price);
+      modalDescription.textContent = product.description;
+      modalMainImage.src = modalImage;
+
+      modalSpecs.innerHTML = [product.series, ...product.shortFlags].map(spec => `<span class="chip">${spec}</span>`).join('');
+      modalFilterSelect.innerHTML = product.filters.map(filter => `<option value="${filter}">${filter}</option>`).join('');
+      modalColorSelect.innerHTML = product.colors.map(color => `<option value="${color}">${color}</option>`).join('');
+      modalThumbs.innerHTML = product.images.map((img, index) => `<img src="${img}" data-modal-thumb="${img}" class="${index === 0 ? 'active' : ''}" alt="thumb">`).join('');
+
+      updateModalWishlistState();
+
+      productModal.classList.add('show');
+      productModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      productModal.classList.remove('show');
+      productModal.setAttribute('aria-hidden', 'true');
+      modalProduct = null;
+      modalMainImage.style.transform = 'scale(1)';
+      modalMainImage.style.transformOrigin = 'center center';
+      if (!sidebarCart.classList.contains('open')) document.body.style.overflow = '';
+    }
+
+    function updateModalWishlistState() {
+      if (!modalProduct) return;
+      const active = wishlist.includes(modalProduct.id);
+      modalWishlistBtn.textContent = active ? 'Quitar de wishlist' : 'Agregar a wishlist';
+    }
+
+    function syncThumbInCard(thumbEl) {
+      const card = thumbEl.closest('.product-card');
+      if (!card) return;
+      const mainImg = card.querySelector('.product-main-image');
+      mainImg.src = thumbEl.dataset.thumbSrc;
+      card.querySelectorAll('.thumbs img').forEach(img => img.classList.remove('active'));
+      thumbEl.classList.add('active');
+    }
+
+    function initEvents() {
+      document.addEventListener('click', (e) => {
+        const addBtn = e.target.closest('[data-add]');
+        const wishBtn = e.target.closest('[data-wishlist]');
+        const quickBtn = e.target.closest('[data-quick]');
+        const zoomBtn = e.target.closest('[data-zoom]');
+        const thumbEl = e.target.closest('[data-thumb-src]');
+        const cartQtyBtn = e.target.closest('[data-cart-qty]');
+        const cartRemoveBtn = e.target.closest('[data-cart-remove]');
+        const modalThumb = e.target.closest('[data-modal-thumb]');
+
+        if (addBtn) {
+          addToCart(Number(addBtn.dataset.add));
+        }
+
+        if (wishBtn) {
+          toggleWishlist(Number(wishBtn.dataset.wishlist));
+        }
+
+        if (quickBtn) {
+          openModal(Number(quickBtn.dataset.quick));
+        }
+
+        if (zoomBtn) {
+          openModal(Number(zoomBtn.dataset.zoom));
+        }
+
+        if (thumbEl) syncThumbInCard(thumbEl);
+
+        if (cartQtyBtn) {
+          const index = Number(cartQtyBtn.dataset.index);
+          const delta = cartQtyBtn.dataset.cartQty === 'plus' ? 1 : -1;
+          changeQty(index, delta);
+        }
+
+        if (cartRemoveBtn) {
+          removeFromCart(Number(cartRemoveBtn.dataset.cartRemove));
+        }
+
+        if (modalThumb) {
+          modalImage = modalThumb.dataset.modalThumb;
+          modalMainImage.src = modalImage;
+          modalThumbs.querySelectorAll('img').forEach(img => img.classList.remove('active'));
+          modalThumb.classList.add('active');
+        }
+      });
+
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach(b => b.classList.remove('gold-btn'));
+          btn.classList.add('gold-btn');
+          currentFilter = btn.dataset.filter;
+          renderProducts();
+        });
+      });
+
+      searchInput.addEventListener('input', e => {
+        searchTerm = e.target.value.trim();
+        renderProducts();
+      });
+
+      focusSearchBtn.addEventListener('click', () => searchInput.focus());
+      mobileToggle.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+      cartOpenBtn.addEventListener('click', openCart);
+      ctaCartBtn.addEventListener('click', openCart);
+      closeCartBtn.addEventListener('click', closeCart);
+      continueBtn.addEventListener('click', closeCart);
+      pageOverlay.addEventListener('click', closeCart);
+      wishlistOpenBtn.addEventListener('click', () => {
+        if (!wishlist.length) {
+          toast('Tu wishlist está vacía por ahora.');
+          return;
+        }
+        const names = wishlist.map(id => products.find(p => p.id === id)?.name).filter(Boolean).join(', ');
+        toast('Wishlist: ' + names);
+      });
+
+      closeModalBtn.addEventListener('click', closeModal);
+      modalBackdrop.addEventListener('click', closeModal);
+      openFeaturedModalBtn.addEventListener('click', () => openModal(2));
+
+      qtyMinusBtn.addEventListener('click', () => {
+        if (modalQty > 1) modalQty -= 1;
+        qtyValue.textContent = modalQty;
+      });
+
+      qtyPlusBtn.addEventListener('click', () => {
+        modalQty += 1;
+        qtyValue.textContent = modalQty;
+      });
+
+      modalAddCartBtn.addEventListener('click', () => {
+        if (!modalProduct) return;
+        addToCart(modalProduct.id, modalQty, modalFilterSelect.value, modalColorSelect.value);
+      });
+
+      modalWishlistBtn.addEventListener('click', () => {
+        if (!modalProduct) return;
+        toggleWishlist(modalProduct.id);
+      });
+
+      zoomStage.addEventListener('mousemove', (e) => {
+        const rect = zoomStage.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        modalMainImage.style.transformOrigin = `${x}% ${y}%`;
+        modalMainImage.style.transform = 'scale(1.95)';
+      });
+
+      zoomStage.addEventListener('mouseleave', () => {
+        modalMainImage.style.transformOrigin = 'center center';
+        modalMainImage.style.transform = 'scale(1)';
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeModal();
+          closeCart();
+          mobileMenu.classList.remove('open');
+        }
+      });
+    }
+
+    renderCollections();
+    renderReviews();
+    renderProducts();
+    renderCart();
+    updateCounters();
+    initEvents();
+  </script>
+</body>
+</html>
